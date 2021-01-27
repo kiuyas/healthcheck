@@ -1,0 +1,166 @@
+<%#
+============================================================
+  健康チェックシートアプリ
+  by kiuyas(https://github.com/kiuyas)
+============================================================
+------------------------------
+  確認・印刷画面テンプレート
+------------------------------
+%>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= pagetitle %></title>
+    <link rel='stylesheet' href='/css/common.css' />
+    <link rel='stylesheet' href='/css/confirm.css' />
+</head>
+
+<body>
+    <div class="controlPanel">
+        <button id="btnPrint" onclick="window.print();">印刷</button>
+        <button id="btnBack" onclick="history.back();">戻る</button>
+    </div>
+    <h1><%= title %></h1>
+    <h3>氏名</h3>
+    <div class="general">
+        <%=data.name%>
+    </div>
+    <h3>年月</h3>
+    <div class="general">
+        <%=data.date%>
+    </div>
+    <div>
+            <h3>評価(1)</h3>
+        <div class="desc1">最近１か月間の自覚症状について、各質問に対して最も当てはまる項目を選択してください。</div>
+        <table class="items1">
+            <%
+            for(var i = 0; i < textsA1.length; i++) {
+            %>
+                <tr>
+                <th id="q1_<%=i%>" class="q q1"><%=textsA1[i]%></th>
+                <%for(var j = 0; j < textsA2.length; j++) {%>
+                    <% if (textsA2[j]) {%>
+                        <%
+                        var tempClass = "";
+                        if (data['opt1_' + i] == j) {
+                            tempClass = "hit";
+                        }%>
+                        <td id="a1_<%=i%>" class="q1 <%=tempClass%>">
+                            <%=textsA2[j]%> (<%=scoreA[j]%>)
+                        </td>
+                    <% } else { %>
+                        <td id="a1_<%=i%>" class="q1 empty">
+                        </td>
+                    <% } %>
+                <% } %>
+                </tr>
+            <%
+            }
+            %>
+        </table>
+        <%
+        var hitStyle = 'class="hit"';
+        %>
+        <div class="eva1">
+            <table class="eva1">
+                <tr>
+                    <th>Ⅰ</th><td id="eva1_1" <%-data.judge1 == 0 ? hitStyle : ""%>>０～４点</td>
+                    <th>Ⅱ</th><td id="eva1_2" <%-data.judge1 == 1 ? hitStyle : ""%>>５～１０点</td>
+                    <th>Ⅲ</th><td id="eva1_3" <%-data.judge1 == 2 ? hitStyle : ""%>>１１～２０点</td>
+                    <th>Ⅳ</th><td id="eva1_4" <%-data.judge1 == 3 ? hitStyle : ""%>>２１点以上</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div>
+        <h3>評価(2)</h3>
+        <div class="desc2">最近１か月間の勤務の状況について、各質問に対し最も当てはまる項目を選択してください。</div>
+        <table class="items2">
+        <%
+        for(var i = 0; i < textsB1.length; i++) {
+        %>
+        <tr>
+            <th id="q2_<%=i%>" class="q q2"><%=textsB1[i]%></th>
+            <%for(var j = 0; j < textsB2[i].length; j++) {%>
+                <% if (textsB2[i][j]) {%>
+                    <%
+                    var tempClass = "";
+                    if (data['opt2_' + i] == j) {
+                        tempClass = "hit";
+                    }%>
+                    <td id="a2_<%=i%>" class="q2 <%=tempClass%>">
+                    <%=textsB2[i][j]%>(<%=scoreB[j]%>)
+                    </td>
+                <% } else { %>
+                    <td id="a2_<%=i%>" class="q2 empty">
+                    </td>
+                <% } %>
+            <% } %>
+        </tr>
+        <%
+        }
+        %>
+        </table>
+        <div class="eva2">
+            <table class="eva2">
+                <tr>
+                    <th>A</th><td id="eva2_1" <%-data.judge2 == 0 ? hitStyle : ""%>>０点</td>
+                    <th>B</th><td id="eva2_1" <%-data.judge2 == 1 ? hitStyle : ""%>>１～２点</td>
+                    <th>C</th><td id="eva2_1" <%-data.judge2 == 2 ? hitStyle : ""%>>３～５点</td>
+                    <th>D</th><td id="eva2_1" <%-data.judge2 == 3 ? hitStyle : ""%>>６点以上</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="eva3">
+        <h3>総合判定</h3>
+        <table class="eva3">
+            <tr>
+                <th colspan="2" rowspan="2"></th>
+                <th colspan="4">勤務の状況</th>
+            </tr>
+            <tr>
+                <th style="width: 48px;" <%-data.judge2 == 0 ? 'class="hit"' : ""%>>A</th>
+                <th style="width: 48px;" <%-data.judge2 == 1 ? 'class="hit"' : ""%>>B</th>
+                <th style="width: 48px;" <%-data.judge2 == 2 ? 'class="hit"' : ""%>>C</th>
+                <th style="width: 48px;" <%-data.judge2 == 3 ? 'class="hit"' : ""%>>D</th>
+            </tr>
+            <tr>
+                <th rowspan="4">自<br/>覚<br/>症<br/>状</th>
+                <th <%-data.judge1 == 0 ? 'class="hit"' : ""%>>Ⅰ</th>
+                <td style="text-align: right;" <%-data.judge1 == 0 && data.judge2 == 0 ? 'class="hit"' : ""%>>0</td>
+                <td style="text-align: right;" <%-data.judge1 == 0 && data.judge2 == 1 ? 'class="hit"' : ""%>>0</td>
+                <td style="text-align: right;" <%-data.judge1 == 0 && data.judge2 == 2 ? 'class="hit"' : ""%>>2</td>
+                <td style="text-align: right;" <%-data.judge1 == 0 && data.judge2 == 3 ? 'class="hit"' : ""%>>4</td>
+            </tr>
+            <tr>
+                <th <%-data.judge1 == 1 ? 'class="hit"' : ""%>>Ⅱ</th>
+                <td style="text-align: right;" <%-data.judge1 == 1 && data.judge2 == 0 ? 'class="hit"' : ""%>>0</td>
+                <td style="text-align: right;" <%-data.judge1 == 1 && data.judge2 == 1 ? 'class="hit"' : ""%>>1</td>
+                <td style="text-align: right;" <%-data.judge1 == 1 && data.judge2 == 2 ? 'class="hit"' : ""%>>3</td>
+                <td style="text-align: right;" <%-data.judge1 == 1 && data.judge2 == 3 ? 'class="hit"' : ""%>>5</td>
+            </tr>
+            <tr>
+                <th <%-data.judge1 == 2 ? 'class="hit"' : ""%>>Ⅲ</th>
+                <td style="text-align: right;" <%-data.judge1 == 2 && data.judge2 == 0 ? 'class="hit"' : ""%>>0</td>
+                <td style="text-align: right;" <%-data.judge1 == 2 && data.judge2 == 1 ? 'class="hit"' : ""%>>2</td>
+                <td style="text-align: right;" <%-data.judge1 == 2 && data.judge2 == 2 ? 'class="hit"' : ""%>>4</td>
+                <td style="text-align: right;" <%-data.judge1 == 2 && data.judge2 == 3 ? 'class="hit"' : ""%>>6</td>
+            </tr>
+            <tr>
+                <th <%-data.judge1 == 3 ? 'class="hit"' : ""%>>Ⅳ</th>
+                <td style="text-align: right;" <%-data.judge1 == 3 && data.judge2 == 0 ? 'class="hit"' : ""%>>1</td>
+                <td style="text-align: right;" <%-data.judge1 == 3 && data.judge2 == 1 ? 'class="hit"' : ""%>>3</td>
+                <td style="text-align: right;" <%-data.judge1 == 3 && data.judge2 == 2 ? 'class="hit"' : ""%>>5</td>
+                <td style="text-align: right;" <%-data.judge1 == 3 && data.judge2 == 3 ? 'class="hit"' : ""%>>7</td>
+            </tr>
+        </table>
+    </div>
+    <h3>出力日時</h3>
+    <div class="general">
+        <%=data.printDate%>
+    </div>
+</body>
+
+</html>
